@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Dashboard — GE Umbrella Event</title>
+<title>Admin Dashboard — GE Lucky Ticket Event</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Segoe UI', sans-serif; background: #0d1117; color: #e6edf3; min-height: 100vh; padding: 24px; }
@@ -87,8 +87,7 @@ td { padding: 11px 14px; }
 <div id="loginScreen">
   <div class="login-box">
     <h2>ADMIN LOGIN</h2>
-    <p class="login-subtitle">GE Umbrella Event — เข้าถึงเฉพาะผู้ดูแล</p>
-    <input type="email" id="loginEmail" placeholder="อีเมล" autocomplete="username">
+    <p class="login-subtitle">GE Lucky Ticket Event — เข้าถึงเฉพาะผู้ดูแล</p>
     <input type="password" id="loginPass" placeholder="รหัสผ่าน" autocomplete="current-password"
            onkeydown="if(event.key==='Enter')doLogin()">
     <button class="btn-gold" onclick="doLogin()">เข้าสู่ระบบ</button>
@@ -101,7 +100,7 @@ td { padding: 11px 14px; }
   <div id="topBar">
     <div>
       <h1>Admin Dashboard</h1>
-      <p class="subtitle">GE Umbrella Event — บันทึกแห่งอาณาจักร</p>
+      <p class="subtitle">GE Lucky Ticket Event — บันทึกแห่งอาณาจักร</p>
     </div>
     <div style="text-align:right">
       <div class="user-info" id="userInfo"></div>
@@ -117,18 +116,18 @@ td { padding: 11px 14px; }
   </div>
 
   <div class="bars">
-    <h3>สัดส่วนร่มที่ชนะ</h3>
-    <div class="bar-row"><span class="bar-label" style="color:#79b8ff">น้ำเงิน</span><div class="bar-track"><div class="bar-fill" id="barBlue" style="background:#58a6ff;width:0%"></div></div><span class="bar-pct" id="pctBlue">0%</span></div>
-    <div class="bar-row"><span class="bar-label" style="color:#ff7b72">แดง</span><div class="bar-track"><div class="bar-fill" id="barRed" style="background:#ff7b72;width:0%"></div></div><span class="bar-pct" id="pctRed">0%</span></div>
-    <div class="bar-row"><span class="bar-label" style="color:#f0c040">เหลือง</span><div class="bar-track"><div class="bar-fill" id="barYellow" style="background:#f0c040;width:0%"></div></div><span class="bar-pct" id="pctYellow">0%</span></div>
-    <div class="bar-row"><span class="bar-label" style="color:#56d364">เขียว</span><div class="bar-track"><div class="bar-fill" id="barGreen" style="background:#56d364;width:0%"></div></div><span class="bar-pct" id="pctGreen">0%</span></div>
+    <h3>สัดส่วน Ticket ที่ชนะ</h3>
+    <div class="bar-row"><span class="bar-label" style="color:#c8c8d8">White</span><div class="bar-track"><div class="bar-fill" id="barWhite" style="background:#c8c8d8;width:0%"></div></div><span class="bar-pct" id="pctWhite">0%</span></div>
+    <div class="bar-row"><span class="bar-label" style="color:#c084fc">Purple</span><div class="bar-track"><div class="bar-fill" id="barPurple" style="background:#9333ea;width:0%"></div></div><span class="bar-pct" id="pctPurple">0%</span></div>
+    <div class="bar-row"><span class="bar-label" style="color:#79b8ff">Blue</span><div class="bar-track"><div class="bar-fill" id="barBlue" style="background:#3b82f6;width:0%"></div></div><span class="bar-pct" id="pctBlue">0%</span></div>
+    <div class="bar-row"><span class="bar-label" style="color:#56d364">Green</span><div class="bar-track"><div class="bar-fill" id="barGreen" style="background:#22c55e;width:0%"></div></div><span class="bar-pct" id="pctGreen">0%</span></div>
   </div>
 
   <div class="toolbar">
     <input type="text" id="searchBox" placeholder="ค้นหา EXE ID..." oninput="renderTable()">
     <select id="filterColor" onchange="renderTable()">
-      <option value="">ร่มทุกสี</option><option value="blue">น้ำเงิน</option>
-      <option value="red">แดง</option><option value="yellow">เหลือง</option><option value="green">เขียว</option>
+      <option value="">Ticket ทุกสี</option><option value="white">White Ticket</option>
+      <option value="purple">Purple Ticket</option><option value="blue">Blue Ticket</option><option value="green">Green Ticket</option>
     </select>
     <select id="filterServer" onchange="renderTable()">
       <option value="">ทุก Server</option>
@@ -140,7 +139,7 @@ td { padding: 11px 14px; }
 
   <div class="table-wrap">
     <table>
-      <thead><tr><th>#</th><th>EXE ID</th><th>Server</th><th>ร่มที่ได้</th><th>ของรางวัล</th><th>เวลาที่เล่น</th></tr></thead>
+      <thead><tr><th>#</th><th>EXE ID</th><th>Server</th><th>Ticket ที่ได้</th><th>ของรางวัล</th><th>เวลาที่เล่น</th></tr></thead>
       <tbody id="tableBody"><tr><td colspan="6" class="status-row"><span class="spinner"></span>กำลังโหลด...</td></tr></tbody>
     </table>
   </div>
@@ -148,47 +147,44 @@ td { padding: 11px 14px; }
 
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 <script>
 const CFG={apiKey:"AIzaSyDqbGsBIkJzxqyLF3nNSLXCFRIze5la5qU",authDomain:"granado-espada-event.firebaseapp.com",databaseURL:"https://granado-espada-event-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"granado-espada-event",storageBucket:"granado-espada-event.firebasestorage.app",messagingSenderId:"293451160037",appId:"1:293451160037:web:517d07067ae1e6affc370c"};
 firebase.initializeApp(CFG);
 const db=firebase.database();
-const auth=firebase.auth();
 let all=[];
 
-/* ── Auth State ── */
-auth.onAuthStateChanged(function(user){
-  if(user){
-    document.getElementById('loginScreen').style.display='none';
-    document.getElementById('dashboard').style.display='block';
-    document.getElementById('userInfo').textContent=user.email;
-    loadData();
-  } else {
-    document.getElementById('loginScreen').style.display='flex';
-    document.getElementById('dashboard').style.display='none';
-  }
-});
+/* ── Password Auth (SHA-256 hardcoded) ── */
+// รหัสผ่าน default: GEAdmin2024  (เปลี่ยนได้โดยแก้ PASS_HASH ด้านล่าง)
+const PASS_HASH='9418430a444357c1b35a879cec82f0bf12bf436b68f3ec830d56766a78459366';
+function sha256(msg){return crypto.subtle.digest('SHA-256',new TextEncoder().encode(msg)).then(function(buf){return Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,'0');}).join('');});}
+
+/* ── Auto-login if session still active ── */
+(function(){if(sessionStorage.getItem('ge_admin_ok')==='1'){showDash();loadData();}})();
+
+function showDash(){document.getElementById('loginScreen').style.display='none';document.getElementById('dashboard').style.display='block';document.getElementById('userInfo').textContent='Admin';}
 
 function doLogin(){
-  var email=document.getElementById('loginEmail').value.trim();
   var pass=document.getElementById('loginPass').value;
   var errEl=document.getElementById('loginError');
   errEl.textContent='';
-  if(!email||!pass){errEl.textContent='กรุณากรอกอีเมลและรหัสผ่าน';return;}
-  auth.signInWithEmailAndPassword(email,pass).catch(function(e){
-    errEl.textContent='เข้าสู่ระบบไม่สำเร็จ: รหัสผ่านหรืออีเมลไม่ถูกต้อง';
+  if(!pass){errEl.textContent='กรุณากรอกรหัสผ่าน';return;}
+  sha256(pass).then(function(h){
+    if(h===PASS_HASH){
+      sessionStorage.setItem('ge_admin_ok','1');
+      showDash();
+      loadData();
+    } else {
+      errEl.textContent='รหัสผ่านไม่ถูกต้อง';
+    }
   });
 }
 
-function doLogout(){auth.signOut();}
+function doLogout(){sessionStorage.removeItem('ge_admin_ok');document.getElementById('loginScreen').style.display='flex';document.getElementById('dashboard').style.display='none';}
 
 /* ── Data ── */
 function fmt(iso){if(!iso)return'-';var d=new Date(iso);return d.toLocaleDateString('th-TH')+' '+d.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});}
-function badge(c,l){var m={blue:'badge-blue',red:'badge-red',yellow:'badge-yellow',green:'badge-green'};var e={blue:'น้ำเงิน',red:'แดง',yellow:'เหลือง',green:'เขียว'};return'<span class="badge '+(m[c]||'')+'">'+(e[c]||c)+'</span>';}
-function loadData(){document.getElementById('tableBody').innerHTML='<tr><td colspan="6" class="status-row"><span class="spinner"></span>กำลังโหลด...</td></tr>';db.ref('umbrella_results').once('value').then(function(s){var r=s.val();all=r?Object.values(r):[];all.sort(function(a,b){return(b.playedAt||0)-(a.playedAt||0);});stats();renderTable();}).catch(function(e){document.getElementById('tableBody').innerHTML='<tr><td colspan="6" class="status-row">โหลดไม่สำเร็จ: '+e.message+'</td></tr>';});}
-function stats(){var td=new Date().toDateString(),t=0,l=0,s=0,cc={blue:0,red:0,yellow:0,green:0};all.forEach(function(p){if(p.playedAtISO&&new Date(p.playedAtISO).toDateString()===td)t++;if(p.server==='Leonardo')l++;if(p.server==='Season Server')s++;if(p.winnerColor)cc[p.winnerColor]=(cc[p.winnerColor]||0)+1;});var n=all.length;document.getElementById('statTotal').textContent=n;document.getElementById('statToday').textContent=t;document.getElementById('statLeo').textContent=l;document.getElementById('statSeason').textContent=s;['blue','red','yellow','green'].forEach(function(c){var pct=n>0?Math.round((cc[c]||0)/n*100):0,k=c[0].toUpperCase()+c.slice(1);document.getElementById('bar'+k).style.width=pct+'%';document.getElementById('pct'+k).textContent=pct+'%';});}
+function badge(c,l){var m={white:'badge-white',purple:'badge-purple',blue:'badge-blue',green:'badge-green'};var e={white:'White Ticket',purple:'Purple Ticket',blue:'Blue Ticket',green:'Green Ticket'};return'<span class="badge '+(m[c]||'')+'" style="'+(c==='white'?'background:#2d2d3a;color:#c8c8d8':c==='purple'?'background:#3b1f6e;color:#c084fc':'')+'">'+(l||e[c]||c)+'</span>';}
+function loadData(){document.getElementById('tableBody').innerHTML='<tr><td colspan="6" class="status-row"><span class="spinner"></span>กำลังโหลด...</td></tr>';db.ref('lucky_ticket_results').once('value').then(function(s){var r=s.val();all=r?Object.values(r):[];all.sort(function(a,b){return(b.playedAt||0)-(a.playedAt||0);});stats();renderTable();}).catch(function(e){document.getElementById('tableBody').innerHTML='<tr><td colspan="6" class="status-row">โหลดไม่สำเร็จ: '+e.message+'</td></tr>';});}
+function stats(){var td=new Date().toDateString(),t=0,l=0,s=0,cc={white:0,purple:0,blue:0,green:0};all.forEach(function(p){if(p.playedAtISO&&new Date(p.playedAtISO).toDateString()===td)t++;if(p.server==='Leonardo')l++;if(p.server==='Season Server')s++;if(p.winnerColor)cc[p.winnerColor]=(cc[p.winnerColor]||0)+1;});var n=all.length;document.getElementById('statTotal').textContent=n;document.getElementById('statToday').textContent=t;document.getElementById('statLeo').textContent=l;document.getElementById('statSeason').textContent=s;['white','purple','blue','green'].forEach(function(c){var pct=n>0?Math.round((cc[c]||0)/n*100):0,k=c[0].toUpperCase()+c.slice(1);document.getElementById('bar'+k).style.width=pct+'%';document.getElementById('pct'+k).textContent=pct+'%';});}
 function renderTable(){var q=document.getElementById('searchBox').value.toLowerCase(),fc=document.getElementById('filterColor').value,fs=document.getElementById('filterServer').value;var f=all.filter(function(p){if(q&&!((p.exeId||'').toLowerCase().includes(q)||(p.server||'').toLowerCase().includes(q)))return false;if(fc&&p.winnerColor!==fc)return false;if(fs&&p.server!==fs)return false;return true;});var tb=document.getElementById('tableBody');if(!f.length){tb.innerHTML='<tr><td colspan="6" class="status-row">ไม่พบข้อมูล</td></tr>';return;}tb.innerHTML=f.map(function(p,i){return'<tr><td style="color:#8b949e">'+(i+1)+'</td><td><strong>'+(p.exeId||'-')+'</strong></td><td><span class="server-tag">'+(p.server||'-')+'</span></td><td>'+badge(p.winnerColor,p.winnerLabel)+'</td><td>'+(p.reward||'-')+'</td><td class="time-cell">'+fmt(p.playedAtISO)+'</td></tr>';}).join('');}
-function exportCSV(){var q=document.getElementById('searchBox').value.toLowerCase(),fc=document.getElementById('filterColor').value,fs=document.getElementById('filterServer').value;var f=all.filter(function(p){if(q&&!((p.exeId||'').toLowerCase().includes(q)||(p.server||'').toLowerCase().includes(q)))return false;if(fc&&p.winnerColor!==fc)return false;if(fs&&p.server!==fs)return false;return true;});var h=['EXE ID','Server','ร่มที่ได้','ของรางวัล','เวลาที่เล่น'],rows=f.map(function(p){return[p.exeId||'',p.server||'',p.winnerLabel||p.winnerColor||'',p.reward||'',p.playedAtISO?new Date(p.playedAtISO).toLocaleString('th-TH'):''];});var csv=[h].concat(rows).map(function(r){return r.map(function(v){return'"'+String(v).replace(/"/g,'""')+'"';}).join(',');}).join('\n'),blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8;'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='ge_umbrella_winners.csv';a.click();URL.revokeObjectURL(url);}
-</script>
-</body>
-</html>
+function exportCSV(){var q=document.getElementById('searchBox').value.toLowerCase(),fc=document.getElementById('filterColor').value,fs=document.getElementById('filterServer').value;var f=all.filter(function(p){if(q&&!((p.exeId||'').toLowerCase().includes(q)||(p.server||'').toLowerCase().includes(q)))return false;if(fc&&p.winnerColor!==fc)return false;if(fs&&p.server!==fs)return false;return true;});var h=['EXE ID','Server','Ticket ที่ได้','ของรางวัล','เวลาที่เล่น'],rows=f.map(function(p){return[p.exeId||'',p.server||'',p.winnerLabel||p.winnerColor||'',p.reward||'',p.playedAtISO?new Date(p.playedAtISO).toLocaleString('th-TH'):''];});var csv=[h].concat(rows).map(function(r){return r.map(functi
