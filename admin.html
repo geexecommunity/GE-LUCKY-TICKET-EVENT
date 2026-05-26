@@ -153,12 +153,9 @@ firebase.initializeApp(CFG);
 const db=firebase.database();
 let all=[];
 
-/* ── Password Auth (SHA-256 hardcoded) ── */
-// รหัสผ่าน default: GEAdmin2024  (เปลี่ยนได้โดยแก้ PASS_HASH ด้านล่าง)
-const PASS_HASH='9418430a444357c1b35a879cec82f0bf12bf436b68f3ec830d56766a78459366';
-function sha256(msg){return crypto.subtle.digest('SHA-256',new TextEncoder().encode(msg)).then(function(buf){return Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,'0');}).join('');});}
+/* ── Password Auth ── */
+const PASS='GEAdmin2024';
 
-/* ── Auto-login if session still active ── */
 (function(){if(sessionStorage.getItem('ge_admin_ok')==='1'){showDash();loadData();}})();
 
 function showDash(){document.getElementById('loginScreen').style.display='none';document.getElementById('dashboard').style.display='block';document.getElementById('userInfo').textContent='Admin';}
@@ -168,15 +165,13 @@ function doLogin(){
   var errEl=document.getElementById('loginError');
   errEl.textContent='';
   if(!pass){errEl.textContent='กรุณากรอกรหัสผ่าน';return;}
-  sha256(pass).then(function(h){
-    if(h===PASS_HASH){
-      sessionStorage.setItem('ge_admin_ok','1');
-      showDash();
-      loadData();
-    } else {
-      errEl.textContent='รหัสผ่านไม่ถูกต้อง';
-    }
-  });
+  if(pass===PASS){
+    sessionStorage.setItem('ge_admin_ok','1');
+    showDash();
+    loadData();
+  } else {
+    errEl.textContent='รหัสผ่านไม่ถูกต้อง';
+  }
 }
 
 function doLogout(){sessionStorage.removeItem('ge_admin_ok');document.getElementById('loginScreen').style.display='flex';document.getElementById('dashboard').style.display='none';}
@@ -187,4 +182,8 @@ function badge(c,l){var m={white:'badge-white',purple:'badge-purple',blue:'badge
 function loadData(){document.getElementById('tableBody').innerHTML='<tr><td colspan="6" class="status-row"><span class="spinner"></span>กำลังโหลด...</td></tr>';db.ref('lucky_ticket_results').once('value').then(function(s){var r=s.val();all=r?Object.values(r):[];all.sort(function(a,b){return(b.playedAt||0)-(a.playedAt||0);});stats();renderTable();}).catch(function(e){document.getElementById('tableBody').innerHTML='<tr><td colspan="6" class="status-row">โหลดไม่สำเร็จ: '+e.message+'</td></tr>';});}
 function stats(){var td=new Date().toDateString(),t=0,l=0,s=0,cc={white:0,purple:0,blue:0,green:0};all.forEach(function(p){if(p.playedAtISO&&new Date(p.playedAtISO).toDateString()===td)t++;if(p.server==='Leonardo')l++;if(p.server==='Season Server')s++;if(p.winnerColor)cc[p.winnerColor]=(cc[p.winnerColor]||0)+1;});var n=all.length;document.getElementById('statTotal').textContent=n;document.getElementById('statToday').textContent=t;document.getElementById('statLeo').textContent=l;document.getElementById('statSeason').textContent=s;['white','purple','blue','green'].forEach(function(c){var pct=n>0?Math.round((cc[c]||0)/n*100):0,k=c[0].toUpperCase()+c.slice(1);document.getElementById('bar'+k).style.width=pct+'%';document.getElementById('pct'+k).textContent=pct+'%';});}
 function renderTable(){var q=document.getElementById('searchBox').value.toLowerCase(),fc=document.getElementById('filterColor').value,fs=document.getElementById('filterServer').value;var f=all.filter(function(p){if(q&&!((p.exeId||'').toLowerCase().includes(q)||(p.server||'').toLowerCase().includes(q)))return false;if(fc&&p.winnerColor!==fc)return false;if(fs&&p.server!==fs)return false;return true;});var tb=document.getElementById('tableBody');if(!f.length){tb.innerHTML='<tr><td colspan="6" class="status-row">ไม่พบข้อมูล</td></tr>';return;}tb.innerHTML=f.map(function(p,i){return'<tr><td style="color:#8b949e">'+(i+1)+'</td><td><strong>'+(p.exeId||'-')+'</strong></td><td><span class="server-tag">'+(p.server||'-')+'</span></td><td>'+badge(p.winnerColor,p.winnerLabel)+'</td><td>'+(p.reward||'-')+'</td><td class="time-cell">'+fmt(p.playedAtISO)+'</td></tr>';}).join('');}
-function exportCSV(){var q=document.getElementById('searchBox').value.toLowerCase(),fc=document.getElementById('filterColor').value,fs=document.getElementById('filterServer').value;var f=all.filter(function(p){if(q&&!((p.exeId||'').toLowerCase().includes(q)||(p.server||'').toLowerCase().includes(q)))return false;if(fc&&p.winnerColor!==fc)return false;if(fs&&p.server!==fs)return false;return true;});var h=['EXE ID','Server','Ticket ที่ได้','ของรางวัล','เวลาที่เล่น'],rows=f.map(function(p){return[p.exeId||'',p.server||'',p.winnerLabel||p.winnerColor||'',p.reward||'',p.playedAtISO?new Date(p.playedAtISO).toLocaleString('th-TH'):''];});var csv=[h].concat(rows).map(function(r){return r.map(functi
+function exportCSV(){var q=document.getElementById('searchBox').value.toLowerCase(),fc=document.getElementById('filterColor').value,fs=document.getElementById('filterServer').value;var f=all.filter(function(p){if(q&&!((p.exeId||'').toLowerCase().includes(q)||(p.server||'').toLowerCase().includes(q)))return false;if(fc&&p.winnerColor!==fc)return false;if(fs&&p.server!==fs)return false;return true;});var h=['EXE ID','Server','Ticket ที่ได้','ของรางวัล','เวลาที่เล่น'],rows=f.map(function(p){return[p.exeId||'',p.server||'',p.winnerLabel||p.winnerColor||'',p.reward||'',p.playedAtISO?new Date(p.playedAtISO).toLocaleString('th-TH'):''];});var csv=[h].concat(rows).map(function(r){return r.map(function(v){return'"'+String(v).replace(/"/g,'""')+'"';}).join(',');}).join('\n'),blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8;'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='ge_lucky_ticket_winners.csv';a.click();URL.revokeObjectURL(url);}
+</script>
+</body>
+</html>
+                                                                                                                                                                                                                                        
